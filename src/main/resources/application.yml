@@ -1,0 +1,13 @@
+#pagehelper分页插件配置
+#pagehelper 分页插件
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: countSql
+
+spring:
+  profiles:
+    active: dev
+   # JSON Serialization
+  jackson.serialization.write_dates_as_timestamps: false

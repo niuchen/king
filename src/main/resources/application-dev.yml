@@ -1,0 +1,17 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    username: king
+    password: 123456
+    url: jdbc:mysql://db.elitescloud.com:25005/king?useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+
+
+#showSql
+logging:
+  level:
+    com:
+      example:
+        mapper: debug
