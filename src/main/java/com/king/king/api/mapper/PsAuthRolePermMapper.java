@@ -1,5 +1,6 @@
 package com.king.king.api.mapper;
 
+import com.king.king.api.controller.vo.PsAuthRolePermVo;
 import com.king.king.api.enty.PsAuthRolePerm;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
@@ -24,14 +25,32 @@ public interface PsAuthRolePermMapper {
             "select",
             "ROLE_ID, PERM_CODE",
             "from PS_AUTH_ROLE_PERM",
-            "order by age desc,username asc"
+            "order by ROLE_IDS desc"
     })
     @Results({
             @Result(column = "ROLE_ID", property = "roleId", jdbcType = JdbcType.DECIMAL, id = true),
             @Result(column = "PERM_CODE", property = "permCode", jdbcType = JdbcType.VARCHAR, id = true)
     })
-    List<PsAuthRolePerm> findList();
+    List<PsAuthRolePermVo> findList();
 
     @UpdateProvider(type = PsAuthRolePermSqlBuilder.class, method = PsAuthRolePermSqlBuilder.BATCH_DELETE_SQL)
     Long batchDelete(List<Long> ids);
+
+    @Delete({
+            "delete from PS_AUTH_ROLE_PERM where ROLE_ID = #{roleId}"
+    })
+    void deleteByRoleId(@Param("roleId") Integer roleId);
+
+    /**
+     * 新增 角色权限 记录
+     *
+     * @param roleId 角色编号
+     * @param permCode 权限代码
+     * @return {新增记录数}
+     */
+    @Insert({
+            "insert into PS_AUTH_ROLE_PERM (ROLE_ID,PERM_CODE) ",
+            "values (#{role,jdbcType=DECIMAL},#{perm,jdbcType=NVARCHAR})"
+    })
+    int insertRolePerm(@Param("roleId") Integer roleId, @Param("permCode") String permCode);
 }

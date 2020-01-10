@@ -1,7 +1,6 @@
 package com.king.king.api.enty;
 
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -19,7 +18,7 @@ public class PsAuthPerm {
      * <p>
      * PS_AUTH_PERM.CODE
      */
-    @ApiModelProperty(value = "编码")
+//    @ApiModelProperty(value = "编码")
     private String code;
 
     /**
@@ -27,7 +26,7 @@ public class PsAuthPerm {
      * <p>
      * PS_AUTH_PERM.PCODE
      */
-    @ApiModelProperty(value = "父级权限编码(越往上API匹配范围越大、优先度越低)")
+//    @ApiModelProperty(value = "父级权限编码(越往上API匹配范围越大、优先度越低)")
     private String pcode;
 
     /**
@@ -35,7 +34,7 @@ public class PsAuthPerm {
      * <p>
      * PS_AUTH_PERM.LVL
      */
-    @ApiModelProperty(value = "权限层级")
+//    @ApiModelProperty(value = "权限层级")
     private Byte lvl;
 
     /**
@@ -43,7 +42,7 @@ public class PsAuthPerm {
      * <p>
      * PS_AUTH_PERM.SEQ
      */
-    @ApiModelProperty(value = "同级显示顺序")
+//    @ApiModelProperty(value = "同级显示顺序")
     private Short seq;
 
     /**
@@ -51,7 +50,7 @@ public class PsAuthPerm {
      * <p>
      * PS_AUTH_PERM.LAYER
      */
-    @ApiModelProperty(value = "用户层级(P:平台级|T:租户级|E:企业级)")
+//    @ApiModelProperty(value = "用户层级(P:平台级|T:租户级|E:企业级)")
     private String layer;
 
     /**
@@ -59,7 +58,7 @@ public class PsAuthPerm {
      * <p>
      * PS_AUTH_PERM.FIELD
      */
-    @ApiModelProperty(value = "用户领域(PA:平台管理方|TA:租户管理方|EO:企业运营方|EP:企业合作方)")
+//    @ApiModelProperty(value = "用户领域(PA:平台管理方|TA:租户管理方|EO:企业运营方|EP:企业合作方)")
     private String field;
 
     /**
@@ -67,7 +66,7 @@ public class PsAuthPerm {
      * <p>
      * PS_AUTH_PERM.NAME
      */
-    @ApiModelProperty(value = "名称")
+//    @ApiModelProperty(value = "名称")
     private String name;
 
     /**
@@ -75,7 +74,7 @@ public class PsAuthPerm {
      * <p>
      * PS_AUTH_PERM.TYPE
      */
-    @ApiModelProperty(value = "类别(F:功能项|M:菜单项)")
+//    @ApiModelProperty(value = "类别(F:功能项|M:菜单项)")
     private String type;
 
     /**
@@ -83,7 +82,7 @@ public class PsAuthPerm {
      * <p>
      * PS_AUTH_PERM.APIS
      */
-    @ApiModelProperty(value = "权限控制的API前缀")
+//    @ApiModelProperty(value = "权限控制的API前缀")
     private String apis;
 
     /**
@@ -91,14 +90,14 @@ public class PsAuthPerm {
      * <p>
      * PS_AUTH_PERM.MENU_URL
      */
-    @ApiModelProperty(value = "菜单URL(菜单项有效)")
+//    @ApiModelProperty(value = "菜单URL(菜单项有效)")
     private String menuUrl;
 
     /**
      * 菜单URL(菜单项有效)
      * <p>
-     * PS_AUTH_PERM.MENU_ICO
+     * PS_AUTH_PERM.MENU_ICOs
      */
-    @ApiModelProperty(value = "菜单URL(菜单项有效)")
+//    @ApiModelProperty(value = "菜单URL(菜单项有效)")
     private String menuIco;
 }

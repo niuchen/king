@@ -22,7 +22,7 @@ public class MybatisGeneratorMain {
 //        System.out.println(fie.getPath());
 //        System.out.println(fie.getCanonicalPath());
 //        System.out.println(fie.getAbsolutePath());
-        Configuration config = cp.parseConfiguration(new File("src/main/java/com/king/king/mbg/mybatisGeneratorV1/mybatis-generator.xml"));
+        Configuration config = cp.parseConfiguration(new File("src/main/java/com/king/king/mbg/mybatisGenerator1/mybatis-generator.xml"));
         // Configuration config = cp.parseConfiguration(ClassLoader.getSystemResourceAsStream("mybatis-generator.xml"));
         DefaultShellCallback callback = new DefaultShellCallback(true);
         MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, callback, warnings);

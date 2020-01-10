@@ -2,6 +2,7 @@ package com.king.king.api.service;
 
 import com.github.pagehelper.PageInfo;
 import com.king.king.api.controller.po.PsAuthUserPagePo;
+import com.king.king.api.controller.po.PsAuthUserPo;
 import com.king.king.api.controller.vo.PsAuthUserVo;
 
 import java.util.List;
@@ -15,9 +16,15 @@ import java.util.List;
 public interface PsAuthUserService {
 
     /***分页查询***/
-   // PageInfo<PsAuthUserVo> psAuthUserPage(PsAuthUserPagePo psAuthUserPagePo);
+    // PageInfo<PsAuthUserVo> psAuthUserPage(PsAuthUserPagePo psAuthUserPagePo);
 
-     List<PsAuthUserVo> psAuthUserPage();
+    List<PsAuthUserVo> psAuthUserPage();
+
     PageInfo<PsAuthUserVo> psAuthUserPage(PsAuthUserPagePo psAuthUserPagePo);
 
+    PsAuthUserVo selectUserById(Integer id);
+
+    void add(PsAuthUserPo psAuthUserPo);
+
+    void del(Integer id);
 }

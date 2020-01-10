@@ -1,5 +1,7 @@
 package com.king.king.api.mapper;
 
+import com.king.king.api.controller.po.PsAuthUserPagePo;
+import com.king.king.api.controller.po.PsAuthUserPo;
 import com.king.king.api.controller.vo.PsAuthUserVo;
 import com.king.king.api.enty.PsAuthUser;
 import org.apache.ibatis.annotations.*;
@@ -8,8 +10,14 @@ import org.apache.ibatis.type.JdbcType;
 import java.util.List;
 
 public interface PsAuthUserMapper {
-    @Delete({
-            "delete from PS_AUTH_USER",
+//    @Delete({
+//            "delete from PS_AUTH_USER",
+//            "where ID = #{id,jdbcType=INTEGER}"
+//    })
+//    int deleteById(Integer id);
+
+    @Update({
+            "update PS_AUTH_USER set DELETE_FLAG = 1 ",
             "where ID = #{id,jdbcType=INTEGER}"
     })
     int deleteById(Integer id);
@@ -35,7 +43,7 @@ public interface PsAuthUserMapper {
             "#{custCode,jdbcType=VARCHAR}, #{depCode,jdbcType=VARCHAR})"
     })
     @SelectKey(statement = "LAST_INSERT_ID()", keyProperty = "id", before = true, resultType = Integer.class)
-    int insertEntity(PsAuthUser record);
+    int insertEntity(PsAuthUserPo record);
 
     @Select({
             "select",
@@ -67,7 +75,7 @@ public interface PsAuthUserMapper {
             @Result(column = "CUST_CODE", property = "custCode", jdbcType = JdbcType.VARCHAR),
             @Result(column = "DEP_CODE", property = "depCode", jdbcType = JdbcType.VARCHAR)
     })
-    PsAuthUser findById(Integer id);
+    PsAuthUserVo findById(Integer id);
 
     @Select({
             "select",
@@ -128,4 +136,10 @@ public interface PsAuthUserMapper {
 
     @UpdateProvider(type = PsAuthUserSqlBuilder.class, method = PsAuthUserSqlBuilder.BATCH_DELETE_SQL)
     Long batchDelete(List<Long> ids);
+
+    /**
+     * 根据条件进行模糊查询
+     */
+    @SelectProvider(type = PsAuthUserSqlBuilder.class, method = PsAuthUserSqlBuilder.AUTH_USER_QUUERY)
+    List<PsAuthUserVo> authUserQuery(PsAuthUserPagePo psAuthUserPagePo);
 }

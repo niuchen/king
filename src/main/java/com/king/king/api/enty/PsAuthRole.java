@@ -1,6 +1,5 @@
 package com.king.king.api.enty;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -16,7 +15,7 @@ public class PsAuthRole {
     /**
      * PS_AUTH_ROLE.ID
      */
-    @ApiModelProperty(value = "")
+//    @ApiModelProperty(value = "")
     private Integer id;
 
     /**
@@ -24,7 +23,7 @@ public class PsAuthRole {
      * <p>
      * PS_AUTH_ROLE.LAYER
      */
-    @ApiModelProperty(value = "用户层级(P:平台级|T:租户级|E:企业级)")
+//    @ApiModelProperty(value = "用户层级(P:平台级|T:租户级|E:企业级)")
     private String layer;
 
     /**
@@ -32,7 +31,7 @@ public class PsAuthRole {
      * <p>
      * PS_AUTH_ROLE.FIELD
      */
-    @ApiModelProperty(value = "用户领域(PA:平台管理方|TA:租户管理方|EO:企业运营方|EP:企业合作方)")
+//    @ApiModelProperty(value = "用户领域(PA:平台管理方|TA:租户管理方|EO:企业运营方|EP:企业合作方)")
     private String field;
 
     /**
@@ -40,12 +39,12 @@ public class PsAuthRole {
      * <p>
      * PS_AUTH_ROLE.NAME
      */
-    @ApiModelProperty(value = "名称")
+//    @ApiModelProperty(value = "名称")
     private String name;
 
     /**
      * PS_AUTH_ROLE.DELETE_FLAG
      */
-    @ApiModelProperty(value = "")
+//    @ApiModelProperty(value = "")
     private Boolean deleteFlag;
 }

@@ -3,6 +3,7 @@ package com.king.king.api.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.king.king.api.controller.po.PsAuthUserPagePo;
+import com.king.king.api.controller.po.PsAuthUserPo;
 import com.king.king.api.controller.vo.PsAuthUserVo;
 import com.king.king.api.mapper.PsAuthUserMapper;
 import lombok.RequiredArgsConstructor;
@@ -23,17 +24,44 @@ import java.util.List;
 public class PsAuthUserServiceImpl implements PsAuthUserService {
 
     @Autowired
-    private    PsAuthUserMapper psAuthUserMapper;
+    private PsAuthUserMapper psAuthUserMapper;
 
     @Override
     public List<PsAuthUserVo> psAuthUserPage() {
         return psAuthUserMapper.findList();
     }
+
     @Override
     public PageInfo<PsAuthUserVo> psAuthUserPage(PsAuthUserPagePo psAuthUserPagePo) {
         PageHelper.startPage(psAuthUserPagePo);
-        List<PsAuthUserVo> psAuthUserPagePolist = psAuthUserMapper.findList();
+        List<PsAuthUserVo> psAuthUserPagePolist = psAuthUserMapper.authUserQuery(psAuthUserPagePo);
         PageInfo<PsAuthUserVo> pageInfo = new PageInfo<PsAuthUserVo>(psAuthUserPagePolist);
         return pageInfo;
+    }
+
+    /**
+     * 根据id查询系统用户
+     */
+    @Override
+    public PsAuthUserVo selectUserById(Integer id) {
+        return psAuthUserMapper.findById(id);
+    }
+
+    /**
+     * 新增系统用户
+     */
+    @Override
+    public void add(PsAuthUserPo psAuthUserPo) {
+        psAuthUserMapper.insertEntity(psAuthUserPo);
+    }
+
+    /**
+     * 根据id删除系统用户
+     *
+     * @param id 系统用户ID
+     */
+    @Override
+    public void del(Integer id) {
+        psAuthUserMapper.deleteById(id);
     }
 }

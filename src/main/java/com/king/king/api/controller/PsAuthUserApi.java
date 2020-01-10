@@ -2,17 +2,14 @@ package com.king.king.api.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.king.king.api.controller.po.PsAuthUserPagePo;
+import com.king.king.api.controller.po.PsAuthUserPo;
 import com.king.king.api.controller.vo.PsAuthUserVo;
 import com.king.king.api.service.PsAuthUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,7 +30,7 @@ public class PsAuthUserApi {
 
 
     @GetMapping("/query")
-    @ApiOperation("分页查询搜索")
+    @ApiOperation("系统用户分页查询搜索")
     public PageInfo<PsAuthUserVo> psAuthUserPage(PsAuthUserPagePo psAuthUserPagePo2) {
         PageInfo<PsAuthUserVo> psAuthUserVoPageInfo = psAuthUserService.psAuthUserPage(psAuthUserPagePo2);
         return psAuthUserVoPageInfo;
@@ -43,5 +40,23 @@ public class PsAuthUserApi {
     public PsAuthUserVo psAuthUserPage() {
         List<PsAuthUserVo> psAuthUserVos = psAuthUserService.psAuthUserPage();
         return psAuthUserVos.get(0);
+    }
+
+    @GetMapping("/query/{id}")
+    @ApiOperation("根据id查询系统用户")
+    public PsAuthUserVo selectUserById(@PathVariable("id") Integer id) {
+        return psAuthUserService.selectUserById(id);
+    }
+
+    @PostMapping("/add")
+    @ApiOperation("新增系统用户")
+    public void add(@RequestBody PsAuthUserPo psAuthUserPo) {
+        psAuthUserService.add(psAuthUserPo);
+    }
+
+    @PutMapping("/del/{id}")
+    @ApiOperation("根据id删除系统用户")
+    public void del(@PathVariable("id") Integer id) {
+        psAuthUserService.del(id);
     }
 }

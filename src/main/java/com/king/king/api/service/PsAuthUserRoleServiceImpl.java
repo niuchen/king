@@ -1,7 +1,12 @@
 package com.king.king.api.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.king.king.api.controller.po.PsAuthUserRolePagePo;
+import com.king.king.api.controller.vo.PsAuthUserRoleVo;
 import com.king.king.api.mapper.PsAuthUserRoleMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +18,16 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 2019/12/25
  */
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true, rollbackFor = Exception.class)
 public class PsAuthUserRoleServiceImpl implements PsAuthUserRoleService {
 
-  //  private final PsAuthUserRoleMapper psAuthUserRoleMapper;
+    @Autowired
+    private PsAuthUserRoleMapper psAuthUserRoleMapper;
 
+
+    @Override
+    public PageInfo<PsAuthUserRoleVo> psAuthUserRolePage(PsAuthUserRolePagePo psAuthUserRolePagePo) {
+        PageHelper.startPage(psAuthUserRolePagePo);
+        return new PageInfo<PsAuthUserRoleVo>(psAuthUserRoleMapper.findList());
+    }
 }

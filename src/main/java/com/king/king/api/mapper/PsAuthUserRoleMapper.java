@@ -1,5 +1,6 @@
 package com.king.king.api.mapper;
 
+import com.king.king.api.controller.vo.PsAuthUserRoleVo;
 import com.king.king.api.enty.PsAuthUserRole;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
@@ -24,13 +25,13 @@ public interface PsAuthUserRoleMapper {
             "select",
             "USER_ID, ROLE_ID",
             "from PS_AUTH_USER_ROLE",
-            "order by age desc,username asc"
+            "order by USER_ID desc"
     })
     @Results({
             @Result(column = "USER_ID", property = "userId", jdbcType = JdbcType.DECIMAL, id = true),
             @Result(column = "ROLE_ID", property = "roleId", jdbcType = JdbcType.DECIMAL, id = true)
     })
-    List<PsAuthUserRole> findList();
+    List<PsAuthUserRoleVo> findList();
 
     @UpdateProvider(type = PsAuthUserRoleSqlBuilder.class, method = PsAuthUserRoleSqlBuilder.BATCH_DELETE_SQL)
     Long batchDelete(List<Long> ids);
