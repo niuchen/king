@@ -11,7 +11,6 @@ spring:
     active: dev
    # JSON Serialization
   jackson.serialization.write_dates_as_timestamps: false
-
   freemarker:
     template-loader-path: classpath:/templates
     # 关闭缓存 上线生产环境需要改为true
@@ -25,4 +24,8 @@ spring:
   http:
     converters:
       preferred-json-mapper: jackson
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
 

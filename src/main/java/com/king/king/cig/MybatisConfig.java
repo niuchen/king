@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @MapperScan({
         "com.king.king.api.mapper",
+        "com.king.king.shiro.mapper",
 })
 public class MybatisConfig {
 }

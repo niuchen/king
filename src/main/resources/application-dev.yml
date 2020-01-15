@@ -8,6 +8,19 @@ spring:
     url: jdbc:mysql://db.elitescloud.com:25005/king?useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
 
+  redis:
+    host: db.elitescloud.com
+    port: 25007
+    jedis:
+      pool:
+        max-idle: 8
+        min-idle: 0
+        max-active: 8
+        max-wait: -1
+    timeout: 0
+    password: Xmm-5fLqAbELSw9AviWN
+    database: 2
+
 
 #showSql
 logging:
@@ -15,3 +28,4 @@ logging:
     com:
       example:
         mapper: debug
+debug: true

@@ -1,92 +1,198 @@
-//package com.king.king.shiro;
-//
-//import org.apache.shiro.mgt.SecurityManager;
-//import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-//import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//
-//import java.util.LinkedHashMap;
-//import java.util.Map;
-//
-//
-//@Configuration
-//public class ShiroConfig {
-//    private static final Logger logger = LoggerFactory.getLogger(ShiroConfig.class);
-//
-//    /**
-//     * 注入自定义的 Realm
-//     *
-//     * @return MyRealm
-//     */
-//    @Bean
-//    public MyRealm myAuthRealm() {
-//        MyRealm myRealm = new MyRealm();
-//        logger.info("====myRealm注册完成=====");
-//        return myRealm;
-//    }
-//
-//    /**
-//     * 注入安全管理器
-//     *
-//     * @return SecurityManager
-//     */
-//    @Bean
-//    public SecurityManager securityManager() {
-//        // 将自定义 Realm 加进来
-//        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager(myAuthRealm());
-//        logger.info("====securityManager注册完成====");
-//        return securityManager;
-//    }
-//
-//    /**
-//     * 注入 Shiro 过滤器
-//     *
-//     * @param securityManager 安全管理器
-//     * @return ShiroFilterFactoryBean
-//     */
-//    @Bean
-//    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
-//        // 定义 shiroFactoryBean
-//        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-//
-//        // 设置自定义的 securityManager
-//        shiroFilterFactoryBean.setSecurityManager(securityManager);
-//
-//        // 设置默认登录的 URL，身份认证失败会访问该 URL
-//        shiroFilterFactoryBean.setLoginUrl("/login");
-//        // 设置成功之后要跳转的链接
-//        shiroFilterFactoryBean.setSuccessUrl("/success");
-//        // 设置未授权界面，权限认证失败会访问该 URL
-//        shiroFilterFactoryBean.setUnauthorizedUrl("/unauthorized");
-//
-//        // LinkedHashMap 是有序的，进行顺序拦截器配置
-//        Map<String, String> filterChainMap = new LinkedHashMap<>();
-//
-//        // 配置可以匿名访问的地址，可以根据实际情况自己添加，放行一些静态资源等，anon 表示放行
-//        filterChainMap.put("/css/**", "anon");
-//        filterChainMap.put("/imgs/**", "anon");
-//        filterChainMap.put("/js/**", "anon");
-//        filterChainMap.put("/swagger-*/**", "anon");
-//        filterChainMap.put("/swagger-ui.html/**", "anon");
-//        // 登录 URL 放行
-//        filterChainMap.put("/login", "anon");
-//
-//        // 以“/user/admin” 开头的用户需要身份认证，authc 表示要进行身份认证
-//        filterChainMap.put("/user/admin*", "authc");
-//        // “/user/student” 开头的用户需要角色认证，是“admin”才允许
-//        filterChainMap.put("/user/student*/**", "roles[admin]");
-//        // “/user/teacher” 开头的用户需要权限认证，是“user:create”才允许
-//        filterChainMap.put("/user/teacher*/**", "perms[\"user:create\"]");
-//
-//        // 配置 logout 过滤器
-//        filterChainMap.put("/logout", "logout");
-//
-//        // 设置 shiroFilterFactoryBean 的 FilterChainDefinitionMap
-//        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainMap);
-//        logger.info("====shiroFilterFactoryBean注册完成====");
-//        return shiroFilterFactoryBean;
-//    }
-//}
+package com.king.king.shiro;
+
+
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.spring.LifecycleBeanPostProcessor;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
+import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.crazycake.shiro.RedisCacheManager;
+import org.crazycake.shiro.RedisManager;
+import org.crazycake.shiro.RedisSessionDAO;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.Filter;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+
+@Configuration
+public class ShiroConfig {
+
+
+    @Bean
+    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
+        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        shiroFilterFactoryBean.setSecurityManager(securityManager);
+        // 没有登陆的用户只能访问登陆页面
+        shiroFilterFactoryBean.setLoginUrl("/auth/login");
+        // 登录成功后要跳转的链接
+        shiroFilterFactoryBean.setSuccessUrl("/auth/index");
+        // 未授权界面; ----这个配置了没卵用，具体原因想深入了解的可以自行百度
+        //shiroFilterFactoryBean.setUnauthorizedUrl("/auth/403");
+        //自定义拦截器
+        Map<String, Filter> filtersMap = new LinkedHashMap<String, Filter>();
+        //限制同一帐号同时在线的个数。
+        filtersMap.put("kickout", kickoutSessionControlFilter());
+        shiroFilterFactoryBean.setFilters(filtersMap);
+        // 权限控制map.
+        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
+        filterChainDefinitionMap.put("/css/**", "anon");
+        filterChainDefinitionMap.put("/js/**", "anon");
+        filterChainDefinitionMap.put("/img/**", "anon");
+        filterChainDefinitionMap.put("/auth/login", "anon");
+        filterChainDefinitionMap.put("/auth/logout", "logout");
+        filterChainDefinitionMap.put("/auth/kickout", "anon");
+
+        filterChainDefinitionMap.put("/swagger-ui.html", "anon");
+        filterChainDefinitionMap.put("/webjars/springfox-swagger-ui/**", "anon");
+        filterChainDefinitionMap.put("/swagger-resources/**", "anon");
+        filterChainDefinitionMap.put("/v2/api-docs", "anon");
+
+
+        filterChainDefinitionMap.put("/**", "authc,kickout");
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
+        return shiroFilterFactoryBean;
+    }
+
+    @Bean
+    public SecurityManager securityManager() {
+        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        // 设置realm.
+        securityManager.setRealm(myShiroRealm());
+        // 自定义缓存实现 使用redis
+        securityManager.setCacheManager(cacheManager());
+        // 自定义session管理 使用redis
+        securityManager.setSessionManager(sessionManager());
+        return securityManager;
+    }
+
+    /**
+     * 身份认证realm; (这个需要自己写，账号密码校验；权限等)
+     *
+     * @return
+     */
+    @Bean
+    public MyShiroRealm myShiroRealm() {
+        MyShiroRealm myShiroRealm = new MyShiroRealm();
+        return myShiroRealm;
+    }
+
+    /**
+     * cacheManager 缓存 redis实现
+     * 使用的是shiro-redis开源插件
+     *
+     * @return
+     */
+    public RedisCacheManager cacheManager() {
+        RedisCacheManager redisCacheManager = new RedisCacheManager();
+        redisCacheManager.setRedisManager(redisManager());
+        return redisCacheManager;
+    }
+
+    /**
+     * 配置shiro redisManager
+     * 使用的是shiro-redis开源插件
+     *
+     * @return
+     */
+    public RedisManager redisManager() {
+        RedisManager redisManager = new RedisManager();
+        redisManager.setHost("db.elitescloud.com");
+        redisManager.setPort(25007);
+        redisManager.setExpire(1800);// 配置缓存过期时间
+        redisManager.setTimeout(0);
+          redisManager.setPassword("Xmm-5fLqAbELSw9AviWN");
+//        RedisManager redisManager = new RedisManager();
+//        redisManager.setHost(redisProperties.getHost());
+//        redisManager.setPort(redisProperties.getPort());
+//        redisManager.setExpire(1800);// 配置缓存过期时间
+//        redisManager.setTimeout(0);//// jedis尝试连接到redis服务器超时，不是过期时间!以毫秒为单位
+//        redisManager.setPassword(redisProperties.getPassword());
+
+        return redisManager;
+    }
+
+    /**
+     * Session Manager
+     * 使用的是shiro-redis开源插件
+     */
+    @Bean
+    public DefaultWebSessionManager sessionManager() {
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        sessionManager.setSessionDAO(redisSessionDAO());
+        return sessionManager;
+    }
+
+    /**
+     * RedisSessionDAO shiro sessionDao层的实现 通过redis
+     * 使用的是shiro-redis开源插件
+     */
+    @Bean
+    public RedisSessionDAO redisSessionDAO() {
+        RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
+        redisSessionDAO.setRedisManager(redisManager());
+        return redisSessionDAO;
+    }
+
+    /**
+     * 限制同一账号登录同时登录人数控制
+     *
+     * @return
+     */
+    @Bean
+    public KickoutSessionControlFilter kickoutSessionControlFilter() {
+        KickoutSessionControlFilter kickoutSessionControlFilter = new KickoutSessionControlFilter();
+        kickoutSessionControlFilter.setCacheManager(cacheManager());
+        kickoutSessionControlFilter.setSessionManager(sessionManager());
+        kickoutSessionControlFilter.setKickoutAfter(false);
+        kickoutSessionControlFilter.setMaxSession(1);
+        kickoutSessionControlFilter.setKickoutUrl("/auth/kickout");
+        return kickoutSessionControlFilter;
+    }
+
+
+    /***
+     * 授权所用配置
+     *
+     * @return
+     */
+    @Bean
+    public DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator() {
+        DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+        defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
+        return defaultAdvisorAutoProxyCreator;
+    }
+
+    /***
+     * 使授权注解起作用不如不想配置可以在pom文件中加入
+     * <dependency>
+     *<groupId>org.springframework.boot</groupId>
+     *<artifactId>spring-boot-starter-aop</artifactId>
+     *</dependency>
+     * @param securityManager
+     * @return
+     */
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager){
+        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
+        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
+        return authorizationAttributeSourceAdvisor;
+    }
+
+    /**
+     * Shiro生命周期处理器
+     *
+     */
+    @Bean
+    public LifecycleBeanPostProcessor getLifecycleBeanPostProcessor() {
+        return new LifecycleBeanPostProcessor();
+    }
+
+}
