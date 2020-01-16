@@ -10,6 +10,7 @@ import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
 import org.crazycake.shiro.RedisSessionDAO;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -25,9 +26,11 @@ import java.util.Map;
 @Configuration
 public class ShiroConfig {
 
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(MyShiroRealm.class);
 
     @Bean
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
+        logger.info("---------------- 执行 ShiroConfig.shiroFilter 拦截器----------------------");
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         // 没有登陆的用户只能访问登陆页面
@@ -54,7 +57,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/webjars/springfox-swagger-ui/**", "anon");
         filterChainDefinitionMap.put("/swagger-resources/**", "anon");
         filterChainDefinitionMap.put("/v2/api-docs", "anon");
-
+        filterChainDefinitionMap.put("/PsAuthUserApi/**", "anon");
 
         filterChainDefinitionMap.put("/**", "authc,kickout");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
