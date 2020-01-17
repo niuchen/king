@@ -3,6 +3,8 @@ package com.king.king.api.enty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 系统用户(实施阶段配置平台管理员、运营阶段除了改密码外不可维护)
  *
@@ -12,7 +14,7 @@ import lombok.Data;
  */
 //@ApiModel(value = "系统用户(实施阶段配置平台管理员、运营阶段除了改密码外不可维护)")
 @Data
-public class PsAuthUser {
+public class PsAuthUser implements Serializable {
     /**
      * PS_AUTH_USER.ID
      */
