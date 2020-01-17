@@ -9,10 +9,10 @@ pagehelper:
 spring:
   profiles:
     active: dev
-   # JSON Serialization
+    # JSON Serialization
   jackson.serialization.write_dates_as_timestamps: false
   freemarker:
-    template-loader-path: classpath:/templates
+    template-loader-path: classpath:/freemarker
     # 关闭缓存 上线生产环境需要改为true
     cache: false
     charset: utf-8
